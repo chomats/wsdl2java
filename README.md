@@ -1,4 +1,5 @@
 ### Note
+* Version 4.0.0 is for gradle 8.14 (not tested outside my project)
 
 * Version 3.0.0 contains a breaking change: 'cxfVersion' and 'cxfPluginVersion' properties are now required.
 * This plugin is forked from deprecated nilsmagnus/wsdl2java to make the plugin compatible with Gradle 7+. 

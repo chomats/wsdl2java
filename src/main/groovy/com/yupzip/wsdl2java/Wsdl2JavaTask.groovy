@@ -3,6 +3,8 @@ package com.yupzip.wsdl2java
 import groovy.io.FileType
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.file.Directory
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.*
 
 import java.security.MessageDigest
@@ -34,7 +36,8 @@ class Wsdl2JavaTask extends DefaultTask {
         deleteOutputFolders()
         MessageDigest md5 = MessageDigest.getInstance("MD5")
 
-        File tmpDir = new File(project.getBuildDir(), "wsdl2java")
+        Provider<Directory> tmpDirProvider = project.getLayout().getBuildDirectory().dir("wsdl2java")
+        File tmpDir = tmpDirProvider.get().getAsFile()
         tmpDir.deleteDir()
 
         if (classpath == null) {
@@ -82,7 +85,7 @@ class Wsdl2JavaTask extends DefaultTask {
         }
     }
 
-    protected void runWithLocale(Locale locale, Closure<Void> closure) {
+    protected static void runWithLocale(Locale locale, Closure<Void> closure) {
         // save the current default locale – will be set back at the end
         Locale currentDefaultLocale = Locale.getDefault()
         try {
@@ -156,7 +159,7 @@ class Wsdl2JavaTask extends DefaultTask {
         file.withWriter(extension.encoding) { w -> w.write(text) }
     }
 
-    void stripCommentDates(List<String> lines) {
+    static void stripCommentDates(List<String> lines) {
         String prevLine = ""
         for (ListIterator<String> lix = lines.listIterator(); lix.hasNext();) {
             String l = lix.next()
@@ -167,7 +170,7 @@ class Wsdl2JavaTask extends DefaultTask {
         }
     }
 
-    void stabilizeCommentLinks(File file, List<String> lines) {
+    static void stabilizeCommentLinks(File file, List<String> lines) {
         for (ListIterator<String> lix = lines.listIterator(); lix.hasNext();) {
             String l = lix.next()
 
@@ -189,7 +192,7 @@ class Wsdl2JavaTask extends DefaultTask {
         }
     }
 
-    void stabilizeXmlSeeAlso(File file, List<String> lines) {
+    static void stabilizeXmlSeeAlso(File file, List<String> lines) {
         String seeAlsoStart = "@XmlSeeAlso({"
         String seeAlsoEnd = "})"
         for (ListIterator<String> lix = lines.listIterator(); lix.hasNext();) {
@@ -203,7 +206,7 @@ class Wsdl2JavaTask extends DefaultTask {
         }
     }
 
-    void stabilizeXmlElementRef(File file, List<String> lines) {
+    static void stabilizeXmlElementRef(File file, List<String> lines) {
         String prevLine = ""
         for (ListIterator<String> lix = lines.listIterator(); lix.hasNext();) {
             String l = lix.next()
@@ -261,7 +264,7 @@ class Wsdl2JavaTask extends DefaultTask {
         }
     }
 
-    private boolean isObjectFactory(File f) {
+    private static boolean isObjectFactory(File f) {
         return "ObjectFactory.java".equals(f.getName())
     }
 }

@@ -4,7 +4,7 @@ package com.yupzip.wsdl2java;
  * Takes one or more ObjectFactory java files and merge them, sorting the lines in the process.
  * This code relies *entirely* only blank lines as separaters between methods. It is not very clever.
  */
-public class ObjectFactoryMerger {
+class ObjectFactoryMerger {
 	private static final String NEWLINE = System.getProperty("line.separator");
 	private String packageDef;
 	private String constructorDef;
@@ -184,12 +184,12 @@ public class ObjectFactoryMerger {
 		}
 
 		@Override
-		public int compareTo(CreateMethod o) {
+		int compareTo(CreateMethod o) {
 			return uniqMethodName.compareTo(o.uniqMethodName);
 		}
 
 		@Override
-		public int hashCode() {
+		int hashCode() {
 			final int prime = 31;
 			int result = 1;
 			result = prime * result + ((uniqMethodName == null) ? 0 : uniqMethodName.hashCode());
@@ -197,7 +197,7 @@ public class ObjectFactoryMerger {
 		}
 
 		@Override
-		public boolean equals(Object obj) {
+		boolean equals(Object obj) {
 			if (this.is(obj))
 				return true;
 			if (obj == null)
@@ -214,7 +214,7 @@ public class ObjectFactoryMerger {
 		}
 		
 		@Override
-		public String toString() {
+		String toString() {
 			return definition;
 		}
 	}

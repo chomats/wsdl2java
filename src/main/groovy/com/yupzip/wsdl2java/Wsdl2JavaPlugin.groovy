@@ -3,7 +3,6 @@ package com.yupzip.wsdl2java
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
 
 class Wsdl2JavaPlugin implements Plugin<Project> {
     public static final String WSDL2JAVA = "wsdl2java"
@@ -36,22 +35,22 @@ class Wsdl2JavaPlugin implements Plugin<Project> {
             }
         }
 
-        def wsdl2JavaTask = project.tasks.register(WSDL2JAVA_TASK, Wsdl2JavaTask.class) { task ->
-            wsdl2javaConfiguration.withDependencies {
-                it.add(project.dependencies.create("org.apache.cxf:cxf-tools-wsdlto-databinding-jaxb:${cxfVersion.get()}"))
-                it.add(project.dependencies.create("org.apache.cxf:cxf-tools-wsdlto-frontend-jaxws:${cxfVersion.get()}"))
-                if (project.wsdl2java.wsdlsToGenerate.any { it.contains('-xjc-Xts') }) {
-                    it.add(project.dependencies.create("org.apache.cxf.xjcplugins:cxf-xjc-ts:${cxfPluginVersion.get()}"))
-                }
-                if (project.wsdl2java.wsdlsToGenerate.any { it.contains('-xjc-Xbg') }) {
-                    it.add(project.dependencies.create("org.apache.cxf.xjcplugins:cxf-xjc-boolean:${cxfPluginVersion.get()}"))
-                }
-
-                if (JavaVersion.current().isJava9Compatible() && extension.includeJava8XmlDependencies) {
-                    JAVA_9_DEPENDENCIES.each { dep -> it.add(project.dependencies.create(dep)) }
-                }
+        wsdl2javaConfiguration.withDependencies {
+            it.add(project.dependencies.create("org.apache.cxf:cxf-tools-wsdlto-databinding-jaxb:${cxfVersion.get()}"))
+            it.add(project.dependencies.create("org.apache.cxf:cxf-tools-wsdlto-frontend-jaxws:${cxfVersion.get()}"))
+            if (project.wsdl2java.wsdlsToGenerate.any { it.contains('-xjc-Xts') }) {
+                it.add(project.dependencies.create("org.apache.cxf.xjcplugins:cxf-xjc-ts:${cxfPluginVersion.get()}"))
+            }
+            if (project.wsdl2java.wsdlsToGenerate.any { it.contains('-xjc-Xbg') }) {
+                it.add(project.dependencies.create("org.apache.cxf.xjcplugins:cxf-xjc-boolean:${cxfPluginVersion.get()}"))
             }
 
+            if (JavaVersion.current().isJava9Compatible() && extension.includeJava8XmlDependencies) {
+                JAVA_9_DEPENDENCIES.each { dep -> it.add(project.dependencies.create(dep)) }
+            }
+        }
+
+        def wsdl2JavaTask = project.tasks.register(WSDL2JAVA_TASK, Wsdl2JavaTask.class) { task ->
             task.group = "Wsdl2Java"
             task.description = "Generate java source code from WSDL files."
             task.classpath = wsdl2javaConfiguration
